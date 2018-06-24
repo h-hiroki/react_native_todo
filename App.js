@@ -12,7 +12,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  ScrollView,
+  AsyncStorage,
 } from 'react-native';
 
 import TodoList from './TodoList'
@@ -22,6 +22,11 @@ export default class App extends Component<Props> {
   state = {
     newTodo: '', // 入力フォーム用
     todos: [],   // 登録されたTODOの格納用
+  }
+
+  constructor(props) {
+    super(props);
+    this.loadTodos();
   }
 
   // フォームの情報を更新する
@@ -35,15 +40,30 @@ export default class App extends Component<Props> {
     this.setState({
       newTodo: '',
       todos: [newTodo, ...this.state.todos], // newTodoとtodosを合成した配列を新規作成する
-    })
+    }, () => this.storeTodos());
   }
 
   // DELETEボタンが押されたらTODOを削除する
   onPressDelete(index) {
     this.setState({
       todos: this.state.todos.filter((t, i) => i !== index),
+    }, () => this.storeTodos());
+  }
+
+  // todosを変換して保存する
+  storeTodos() {
+    const str = JSON.stringify(this.state.todos) // todosをstring型に変換する。
+    AsyncStorage.setItem('todos', str)
+  }
+
+  // 保存されたtodosをロードする
+  loadTodos() {
+    AsyncStorage.getItem('todos').then((str) => {
+      const todos = str ? JSON.parse(str) : [];
+      this.setState({ todos });
     })
   }
+
 
   render() {
     return (
@@ -72,13 +92,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 30,
+    backgroundColor: '#A5FFD6',
   },
   form: {
     backgroundColor: '#EEE',
     padding: 10,
   },
   addButton: {
-    backgroundColor: '#63D471',
+    backgroundColor: '#FFA69E',
     padding: 14,
     borderRadius: 4,
     marginTop: 10,
