@@ -38,6 +38,13 @@ export default class App extends Component<Props> {
     })
   }
 
+  // DELETEボタンが押されたらTODOを削除する
+  onPressDelete(index) {
+    this.setState({
+      todos: this.state.todos.filter((t, i) => i !== index),
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -52,7 +59,10 @@ export default class App extends Component<Props> {
         >
           <Text style={styles.addButtonText}>ADD</Text>
         </TouchableOpacity>
-        <TodoList todos={this.state.todos}/>
+        <TodoList
+          todos={this.state.todos}
+          onPressDelete={(index) => this.onPressDelete(index)}
+        />
       </View>
     );
   }
