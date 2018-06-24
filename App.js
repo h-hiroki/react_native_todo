@@ -9,14 +9,27 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  TextInput,
 } from 'react-native';
 
 type Props = {};
 export default class App extends Component<Props> {
+  state = {
+    newTodo: '',
+  }
+
+  onChangeText(newTodo) {
+    this.setState({ newTodo }) // shortHand
+  }
+
   render() {
     return (
       <View style={styles.container}>
+        <TextInput 
+          style={styles.form}
+          onChangeText={text => this.onChangeText(text)}
+        />
       </View>
     );
   }
@@ -25,5 +38,10 @@ export default class App extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 30,
+  },
+  form: {
+    backgroundColor: '#EEE',
+    padding: 10,
   },
 });
